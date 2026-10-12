@@ -9,6 +9,7 @@ _*
 /kernel/kernel
 /user/usys.S
 .gdbinit
+temp_auto_push.bat
 *.zip
 xv6.out*
 .vagrant/
@@ -21,3 +22,5 @@ barrier
 *.pcap
 TAGS
 /fs.img.bk
+.gitignore
+branch_structure.json

@@ -162,8 +162,11 @@ uint64 sys_interpose(void) {
 
   struct proc* p = myproc();
 
-  p->interpose_mask = mask;
+  if(p->interpose_locked) return -1;
+
+  p->interpose_mask |= mask;
   strncpy(p->interpose_allowed_path, path, MAXPATH);
+  p->interpose_locked = 1;
 
   return 0;
 }

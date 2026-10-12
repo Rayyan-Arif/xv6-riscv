@@ -275,7 +275,8 @@ kfork(void)
   }
   np->sz = p->sz;
   np->interpose_mask = p->interpose_mask;
-  strncpy(p->interpose_allowed_path, np->interpose_allowed_path, MAXPATH);
+  strncpy(np->interpose_allowed_path, p->interpose_allowed_path, MAXPATH);
+  np->interpose_locked = p->interpose_locked;
 
   // copy saved user registers.
   *(np->trapframe) = *(p->trapframe);
@@ -521,13 +522,14 @@ forkret(void)
   // Still holding p->lock from scheduler.
   release(&p->lock);
 
-  if (first) {
-    first = 0;
-
+  if (__atomic_load_n(&first, __ATOMIC_ACQUIRE)) {
     // File system initialization must be run in the context of a
     // regular process (e.g., because it calls sleep), and thus cannot
     // be run from main().
     fsinit(ROOTDEV);
+
+    // ensure other cores see first=0.
+    __atomic_store_n(&first, 0, __ATOMIC_RELEASE);
 
     // We can invoke kexec() now that file system is initialized.
     // Put the return value (argc) of kexec into a0.
@@ -603,9 +605,6 @@ int
 kkill(int pid)
 {
   struct proc *p;
-
-  if (pid == 0)
-    return -1;
 
   for (p = proc; p < &proc[NPROC]; p++) {
     acquire(&p->lock);
