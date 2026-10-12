@@ -1,13 +1,18 @@
 
 xv6 kernel is booting
 
-hart 2 starting
 hart 1 starting
+hart 2 starting
 init: starting sh
-$ sandbox 32768 README sbtest forkpath
-sbtest: forkpath child README denied
-sbtest: forkpath child exec.sh denied
-sbtest: alive
+$ mkdir d1
+$ echo > d1/pgVLWXrM
+$ mkdir d2
+$ mkdir d2/KlK7UZRZ
+$ find . pgVLWXrM
+./d1/pgVLWXrM
+$ find . xMctNw7Q
+$ find . KlK7UZRZ
+./d2/KlK7UZRZ
 $ echo DONE
 DONE
-$ qemu-system-riscv64: terminating on signal 15 from pid 57013 (make)
+$ qemu-system-riscv64: terminating on signal 15 from pid 123073 (make)

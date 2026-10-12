@@ -98,7 +98,7 @@ int main(int argc, char *argv[]) {
     strcpy(startingPath, argv[1]);
 
     if(argc > 3 && !strcmp(argv[3], "-exec")){
-        if(argc < 6){
+        if(argc < 5){
             fprintf(2, "Incomplete options for -exec\n");
             return 1;
         }
