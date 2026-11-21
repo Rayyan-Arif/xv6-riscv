@@ -151,13 +151,16 @@ void print_pagetable(pagetable_t pagetable, char* level){
   for (int i = 0; i < 512; i++) {
     pte_t pte = pagetable[i];
     
+    if ((pte & PTE_V) == 0)
+      continue;
+
     int length = strlen(level);
     char str[length + 4];
 
     memset(str, ' ', length + 2);
 
-    for (int i = 0; i < length; i++)
-        str[i] = level[i];
+    for (int j = 0; j < length; j++)
+        str[j] = level[j];
 
     str[length] = ' ';
     str[length + 1] = '.';
@@ -166,23 +169,20 @@ void print_pagetable(pagetable_t pagetable, char* level){
 
     if ((pte & PTE_V) && (pte & (PTE_R | PTE_W | PTE_X)) == 0) {
       // this PTE points to a lower-level page table.
-      printk("%s0x%lx pte 0x%lx pa 0x%lx\n", level, (uint64)i, pte, PTE2PA(pte));
+      printk("%s%p pte %p pa %p\n", level, (void*)(uint64)i, (void*)pte, (void*)PTE2PA(pte));
 
       uint64 child = PTE2PA(pte);
       print_pagetable((pagetable_t)child, str);
-      // pagetable[i] = 0;
     } else if (pte & PTE_V) {
-      // backtrace();
-      char perm[4] = "   ";
+      char perm[5] = "   ";
       if(pte & PTE_R) perm[0] = 'R';
       if(pte & PTE_X) perm[1] = 'X';
       if(pte & PTE_W) perm[2] = 'W';
+      if(pte & PTE_U) perm[3] = 'U';
       
-      printk("%s0x%lx pte 0x%lx pa 0x%lx %s\n", level, (uint64)i, pte, PTE2PA(pte),
-         perm);
+      printk("%s%p pte %p pa %p %s\n", level, (void*)(uint64)i, (void*)pte, (void*)PTE2PA(pte), perm);
     }
   }
-  // kfree((void *)pagetable);
 }
 
 #if defined(LAB_PGTBL) || defined(SOL_MMAP) || defined(SOL_COW)
@@ -190,6 +190,7 @@ void
 vmprint(pagetable_t pagetable)
 {
   // your code here
+  printk("page table %p\n", (void*)pagetable);
   print_pagetable(pagetable, "..");
 }
 #endif

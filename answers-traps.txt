@@ -1,0 +1,17 @@
+Question: Which registers contain arguments to functions? For example, which register holds 13 in main's call to printf?
+Ans: The value 13 is stored in register a2
+
+Question: Where is the call to function f in the assembly code for main? Where is the call to g? (Hint: the compiler may inline functions.)
+Ans: There is no call to f() and g() because the compiler has optimized the calls by using inline functions.
+
+Question: At what address is the function printf located?
+Ans: The function printf is located at address 0x746
+
+Question: What value is in the register ra just after the jalr to printf in main?
+Ans: 0x3c
+
+Question: Run the following code.
+Ans: He110 World
+
+Question: In the following code,.....
+Ans: y will contain an unpredictable value because the second argument was never supplied. This is undefined behavior, not simply a guaranteed garbage value.

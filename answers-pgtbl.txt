@@ -1,0 +1,5 @@
+1. uptime():
+   The uptime system call returns the current time (in timer ticks) elapsed since the system booted. By storing the current tick count inside the shared read-only usyscall page and having the timer interrupt handler update it in the kernel, user-space programs can read the time directly via memory access without incurring the overhead of a system call trap.
+
+2. getppid():
+   The getppid system call returns the parent process's PID. Since a process's parent ID rarely changes during its lifetime, it can be cached inside the shared usyscall page during creation or fork, allowing user space to fetch it instantly via a direct memory read.

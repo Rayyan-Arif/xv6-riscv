@@ -75,6 +75,9 @@ sys_pause(void)
 
 
   argint(0, &n);
+
+  backtrace();
+
   if (n < 0)
     n = 0;
   acquire(&tickslock);
@@ -186,3 +189,34 @@ sys_cpupin(void)
   return 0;
 }
 #endif
+
+
+uint64
+sys_sigreturn(void)
+{
+  struct proc *p = myproc();
+
+  memmove(p->trapframe, &p->alarm_trapframe, sizeof(struct trapframe));
+  
+  p->alarm_in_progress = 0;
+  
+  return p->trapframe->a0;
+}
+
+uint64
+sys_sigalarm(void)
+{
+  int ticks;
+  uint64 handler;
+
+  argint(0, &ticks);
+  argaddr(1, &handler);
+
+  struct proc *p = myproc();
+
+  p->alarm_interval = ticks;
+  p->alarm_handler = handler;
+  p->alarm_ticks = 0;
+  p->alarm_in_progress = 0;
+  return 0;
+}

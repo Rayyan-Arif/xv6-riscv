@@ -106,6 +106,8 @@ extern uint64 sys_link(void);
 extern uint64 sys_mkdir(void);
 extern uint64 sys_close(void);
 extern uint64 sys_sync(void);
+extern uint64 sys_sigalarm(void);
+extern uint64 sys_sigreturn(void);
 
 #ifdef LAB_NET
 extern uint64 sys_bind(void);
@@ -165,6 +167,8 @@ static uint64 (*syscalls[])(void) = {
   [SYS_rwlktest] = sys_rwlktest,
   [SYS_cpupin] = sys_cpupin,
 #endif
+  [SYS_sigalarm]    = sys_sigalarm,
+  [SYS_sigreturn]    = sys_sigreturn,
   // clang-format on
 };
 

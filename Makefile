@@ -32,9 +32,8 @@ OBJS = \
   $K/plic.o \
   $K/virtio_disk.o
 
-ifeq ($(LAB),pgtbl)
-OBJS += \
-	$K/stats.o
+ifneq ($(filter pgtbl traps,$(LAB)),)
+OBJS += $K/stats.o
 endif
 
 OBJS_KCSAN = \
@@ -103,6 +102,10 @@ CFLAGS += $(DETFLAGS)
 ifdef LAB
 LABUPPER = $(shell echo $(LAB) | tr a-z A-Z)
 XCFLAGS += -DSOL_$(LABUPPER) -DLAB_$(LABUPPER)
+endif
+
+ifeq ($(LAB),traps)
+XCFLAGS += -DLAB_PGTBL
 endif
 
 CFLAGS += $(XCFLAGS)
@@ -208,7 +211,7 @@ UPROGS=\
 	$U/_forphan\
 	$U/_dorphan\
 	$U/_sync\
-
+	$U/_alarmtest\
 
 
 
@@ -236,7 +239,7 @@ endif
 
 ifeq ($(LAB),thread)
 UPROGS += \
-	$U/_uthread
+	$U/_uthread	
 
 $U/uthread_switch.o : $U/uthread_switch.S
 	$(CC) $(CFLAGS) -c -o $U/uthread_switch.o $U/uthread_switch.S
